@@ -531,8 +531,9 @@ public class DDlogDBViews {
                 "  JOIN matching_pods " +
                 "     ON array_contains(pod_%1$s_match_expressions.%1$s_match_expressions, matching_pods.expr_id) " +
                 "  JOIN %3$s as other_pods ON " +
-                "           matching_pods.pod_uid = other_pods.uid AND pods_to_assign.uid != other_pods.uid " +
+                "           matching_pods.pod_uid = other_pods.uid " +
                 "  WHERE pods_to_assign.has_pod_%1$s_requirements = true " +
+                "           AND pods_to_assign.uid != other_pods.uid " +
                 "GROUP BY " +
                 "  pods_to_assign.uid, " +
                 "  matching_pods.pod_uid, " +
