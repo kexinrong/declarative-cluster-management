@@ -503,7 +503,9 @@ public final class Scheduler {
                                 }
                             }
                             augResult.addAll(toAdd);
-
+//                            LOG.info(String.format("[Scoping Breakdown] aug: %d, topk: %d", augResult.size(),
+//                                    toAdd.size()));
+//
 //                            final Result<Record> origResult = provider.fetchTable(t.getName());
 //                            LOG.info(String.format("[Scoping Optimization]: Reducing size from %d to %d",
 //                                    origResult.size(), augResult.size()));

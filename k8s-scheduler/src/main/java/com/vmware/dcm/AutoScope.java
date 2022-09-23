@@ -21,13 +21,12 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.HashMap;
-import java.util.stream.Stream;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.stream.Collectors;
 
 
 class ScopeUtils {
-    private final double DISCOUNT = 0.9;
+    private static final double DISCOUNT = 0.9;
     private final String tableName;
     private final String idField;
     private final String groupField;
@@ -91,10 +90,6 @@ class ScopeUtils {
         return r.get(this.idField).toString();
     }
 
-    public List<String> getIDs(final List<Record> records) {
-        return records.stream().map(record -> getID(record)).collect(Collectors.toList());
-    }
-
     public List<String> getTopkID(final ConcurrentSkipListSet<Record> records, final int k,
                                   final Map<String, Integer> softConstraints) {
         final Iterator<Record> iter = records.iterator();
@@ -120,16 +115,16 @@ class ScopeUtils {
                     .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
                     .collect(Collectors.toList());
 
-        int i = 0;
+        int i1 = 0;
         while (iter.hasNext() && ids.size() < limit) {
             final Record r = iter.next();
             final double v1 = getSortVal(r);
-            int j = i;
-            while (j < sorted.size() && ids.size() < limit && sorted.get(j).getValue() >= v1) {
-                ids.add(sorted.get(j).getKey());
-                j += 1;
+            int i2 = i1;
+            while (i2 < sorted.size() && ids.size() < limit && sorted.get(i2).getValue() >= v1) {
+                ids.add(sorted.get(i2).getKey());
+                i2 += 1;
             }
-            i = j;
+            i1 = i2;
             if (ids.size() < limit) {
                 ids.add(getID(r));
             }
@@ -210,7 +205,9 @@ class DeltaProcessor implements DeltaCallBack {
         for (final Map.Entry<String, Map<String, ConcurrentSkipListSet<String>>> tbl : exclude.entrySet()) {
             final Set<String> toRemove = getExcludeIDs(tbl.getValue(), true);
             ids.removeAll(toRemove);
-            //LOG.info("EXCLUDE!!!!!!! " + toRemove.size());
+//            final Set<String> unique = getExcludeIDs(tbl.getValue(), false);
+//            LOG.info(String.format("[Scoping Breakdown] exclude: %d, size: %d", toRemove.size(),
+//                    unique.size()));
         }
 
 
